@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Content Kit Editor Demo 0.2.0</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0">
+
+  <!-- Include ContentKit-Editor CSS -->
+  <link href="../css/content-kit-editor.css" rel="stylesheet">
+
+  <!-- Include fancy fonts (optional) -->
+  <link href="http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic|Merriweather+Sans:800" rel="stylesheet">
+
+  <!-- CSS just for the demo page -->
+  <link href="demo.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+
+    <div class="pane">
+      <h2>mobiledoc to load</h2>
+      <div id="mobiledoc-to-load">
+        <textarea>
+[
+  [],
+  [
+    [1, "H2", [
+      [[], 0, "hello world"]
+    ]],
+    [1, "P", [
+      [[], 0, "hello world"]
+    ]]
+  ]
+]
+        </textarea>
+      </div>
+    </div>
+
+    <div class="pane">
+      <h2>editor</h2>
+      <div id="editor">
+      </div>
+    </div>
+
+    <div class="pane">
+      <h2>serialized mobiledoc</h2>
+      <div id="serialized-mobiledoc">
+      </div>
+    </div>
+
+    <div class="pane">
+      <h2>rendered mobiledoc</h2>
+      <div id="rendered-mobiledoc"></div>
+    </div>
+
+  </div>
+
+  <!-- Include ContentKit JS -->
+  <script src="../global/content-kit-editor.js"></script>
+  <!-- JS just for the demo page -->
+  <script src="./jquery/jquery.js"></script>
+  <script src="demo.js"></script>
+</body>
+</html>
