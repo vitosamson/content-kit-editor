@@ -5,6 +5,15 @@ node_js:
 
 sudo: false
 
+env:
+  global:
+    # For Saucelabs
+    - secure: Jdk1b1Cxte80Vy10CXhSNazZTHrdR+9IHNYyJQ9UAlAYXi7lDG+snJrMmBcLto0gt/b6NTdMMi/DLA6dZQ8+GkaLIGt8kQCvMTodA6fq8uYJNsW8SWDOz7VwvUhsSl9uU8R4J0e2D3jItXPui4qKh+j7/aEXbXq9boZHM/Q0c3k=
+    - secure: PfggyfAlzD3FOAgk5Pr6rjVePeTria+fwbfFJDjhWnkLWqBsWi5lNam5Xa5d+CGNZEMbdaWvTz40qLSrK2x6Jq0j5gEAlB9bG0i0FV/9E8BVZowXHF2+cl+72gjhH9w/uEuEHpdjE/rG06ykXfuCRUkAmRBnYli/5o/m9lKeGRg=
+
+addons:
+  sauce_connect: true
+
 cache:
   directories:
     - node_modules
