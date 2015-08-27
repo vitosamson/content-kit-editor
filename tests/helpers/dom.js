@@ -163,6 +163,10 @@ function insertText(string) {
   document.execCommand('insertText', false, string);
 }
 
+function triggerMouseup() {
+  triggerEvent(document, 'mouseup');
+}
+
 const DOMHelper = {
   moveCursorTo,
   selectText,
@@ -175,7 +179,8 @@ const DOMHelper = {
   getSelectedText,
   triggerDelete,
   triggerEnter,
-  insertText
+  insertText,
+  triggerMouseup
 };
 
 export { triggerEvent };

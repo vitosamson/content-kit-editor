@@ -301,12 +301,12 @@ class PostEditor {
         tailMarkerOffset
       });
     } else {
-      let newHeadMarkers = headSection.splitMarker(headMarker, headMarkerOffset);
-      let selectedHeadMarkers = post.markersInRange({
-        headMarker: newHeadMarkers[0],
-        tailMarker: newHeadMarkers[newHeadMarkers.length-1],
-        headMarkerOffset
-      });
+      let offsetInHeadSection = headMarker.offsetInParent(headMarkerOffset);
+      headSection.splitMarker(headMarker, headMarkerOffset);
+      debugger
+      let {marker: newHeadMarker} =
+        headSection.markerPositionAtOffset(offsetInHeadSection);
+      newHeadMarker = newHeadMarker.next;
 
       let newTailMarkers = tailSection.splitMarker(tailMarker, 0, tailMarkerOffset);
       let selectedTailMarkers = post.markersInRange({
@@ -316,8 +316,7 @@ class PostEditor {
         tailMarkerOffset
       });
 
-      let newHeadMarker = selectedHeadMarkers[0],
-          newTailMarker = selectedTailMarkers[selectedTailMarkers.length - 1];
+      let newTailMarker = selectedTailMarkers[selectedTailMarkers.length - 1];
 
       let newMarkers = [];
       if (newHeadMarker) {

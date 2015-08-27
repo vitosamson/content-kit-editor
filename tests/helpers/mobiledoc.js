@@ -3,9 +3,9 @@ import MobiledocRenderer from 'content-kit-editor/renderers/mobiledoc';
 
 /*
  * usage:
- *  makeMD(({post, section, marker, markup}) =>
+ *  makeMD(({post, markupSection, marker, markup}) =>
  *    post([
- *      section('P', [
+ *      markupSection('P', [
  *        marker('some text', [markup('B')])
  *      ])
  *    })

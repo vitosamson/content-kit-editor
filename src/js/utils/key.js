@@ -71,7 +71,7 @@ const Key = class Key {
       (code >= Keycodes.NUMPAD_0 && code <= Keycodes.NUMPAD_9) || // numpad keys
       (code >= Keycodes[';'] && code <= Keycodes['`']) ||         // punctuation
       (code >= Keycodes['['] && code <= Keycodes['"']) ||
-      // FIXME the IME action seems to get lost when we issue an `editor.deleteSelection`
+      // FIXME the IME action seems to get lost when we issue an `editor.deleteRange`
       // before it (in Chrome)
       code === Keycodes.IME
     );

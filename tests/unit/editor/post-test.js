@@ -283,6 +283,31 @@ test('#deleteRange when same section, different markers, different markups', (as
             'tail marker has markup');
 });
 
+test('#deleteRange when cursor head position is at end of marker', (assert) => {
+  let post, s1, m1, m2, m3;
+
+  Helpers.postAbstract.build(({marker, markup, markupSection, post: buildPost}) => {
+    m1 = marker('abc');
+    m2 = marker('de', [markup('b')]);
+    m3 = marker('f');
+    s1 = markupSection('p', [m1,m2,m3]);
+    post = buildPost([s1]);
+  });
+
+  renderBuiltAbstract(post);
+
+  postEditor.deleteRange({
+    headSection: s1,
+    headSectionOffset: 'abc'.length,
+    tailSection: 1,
+    tailSectionOffset: 'abcdef'.length
+  });
+  postEditor.complete();
+
+  assert.equal(post.sections.head.text, 'abc', 'deletes "def"');
+  assert.equal(post.sections.head.markers.length, 1);
+});
+
 test('#deleteRange across contiguous sections', (assert) => {
   let post, s1, s2;
   Helpers.postAbstract.build(({marker, markupSection, post: buildPost}) => {
