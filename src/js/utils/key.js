@@ -1,7 +1,9 @@
 import Keycodes from './keycodes';
 export const DIRECTION = {
   FORWARD: 1,
-  BACKWARD: 2
+  BACKWARD: 2,
+  UP: 3,
+  DOWN: 4
 };
 
 /**
@@ -50,6 +52,19 @@ const Key = class Key {
 
   get metaKey() {
     return this.event.metaKey;
+  }
+
+  isMovement() {
+    return this.keyCode >= Keycodes.LEFT_ARROW &&
+      this.keyCode <= Keycodes.DOWN_ARROW;
+  }
+
+  isDown() {
+    return this.keyCode === Keycodes.DOWN_ARROW;
+  }
+
+  isUp() {
+    return this.keyCode === Keycodes.UP_ARROW;
   }
 
   /**

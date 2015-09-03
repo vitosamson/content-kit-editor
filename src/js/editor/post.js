@@ -713,6 +713,10 @@ class PostEditor {
     });
   }
 
+  selectCard(cardSection) {
+    cardSection.renderNode.cardNode.onSelect();
+  }
+
   /**
    * Add a didUpdate job to the queue
    *

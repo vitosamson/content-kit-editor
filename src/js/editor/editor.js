@@ -123,9 +123,7 @@ function bindKeyListeners(editor) {
   });
 
   editor.addEventListener(document, 'keydown', (event) => {
-    if (!editor.isEditable) {
-      return;
-    }
+    if (!editor.isEditable) { return; }
     const key = Key.fromEvent(event);
 
     if (key.isDelete()) {
@@ -141,6 +139,26 @@ function bindKeyListeners(editor) {
         });
         editor.cursor.moveToSection(offsets.headSection, offsets.headSectionOffset);
       }
+    } else if (key.isDown()) {
+      console.log('down');
+      const currentSection = editor.cursor.offsets.head.section;
+
+      setTimeout(() => {
+        console.log('after down');
+        const newSection = editor.cursor.offsets.head.section;
+        if (currentSection != newSection) {
+          console.log('changed section');
+          if (newSection.prev !== currentSection) {
+            console.log('skipped section');
+            let prevSection = newSection.prev;
+            if (prevSection.type === 'card-section') {
+              editor.run(postEditor => postEditor.selectCard(prevSection));
+              editor.cursor.clearSelection();
+              console.log('section was card section');
+            }
+          }
+        }
+      });
     }
   });
 }

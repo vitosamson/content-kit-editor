@@ -1,3 +1,10 @@
+import {
+  addClassName,
+  removeClassName
+} from 'content-kit-editor/utils/dom-utils';
+
+const ACTIVE_CLASS_NAME = 'active';
+
 export default class CardNode {
   constructor(editor, card, section, element, cardOptions) {
     this.editor = editor;
@@ -8,6 +15,14 @@ export default class CardNode {
 
     this.mode = null;
     this.setupResult = null;
+  }
+
+  onSelect() {
+    addClassName(this.element, ACTIVE_CLASS_NAME);
+  }
+
+  onUnSelect() {
+    removeClassName(this.element, ACTIVE_CLASS_NAME);
   }
 
   render(mode) {
