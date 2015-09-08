@@ -1,8 +1,7 @@
 export const POST_TYPE = 'post';
 import LinkedList from 'content-kit-editor/utils/linked-list';
-import { compact } from 'content-kit-editor/utils/array-utils';
+import { forEach, compact } from 'content-kit-editor/utils/array-utils';
 import Set from 'content-kit-editor/utils/set';
-import { Position, Range } from 'content-kit-editor/utils/cursor';
 
 export default class Post {
   constructor() {
@@ -91,28 +90,13 @@ export default class Post {
     if (head.section === tail.section) {
       return head.section.markupsInRange(range);
     } else {
-      let markups = new Set();
-
-      const headRange = new Range(
-        new Position(head.section, head.offset),
-        new Position(head.section, head.section.text.length)
-      );
-
-      const tailRange = new Range(
-        new Position(tail.section, 0),
-        new Position(tail.section, tail.offset)
-      );
+      const markups = new Set();
 
       this.walkMarkerableSections(range, (section) => {
-        if (section === head.section) {
-          section.markupsInRange(headRange).forEach(m => markups.add(m));
-        } else if (section === tail.section) {
-          section.markupsInRange(tailRange).forEach(m => markups.add(m));
-        } else { 
-          section.markers.forEach(marker => {
-            marker.markups.forEach(m => markups.add(m));
-          });
-        }
+        forEach(
+          section.markupsInRange(range.trimTo(section)),
+          m => markups.add(m)
+        );
       });
 
       return markups.toArray();
