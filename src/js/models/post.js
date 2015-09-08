@@ -1,6 +1,8 @@
 export const POST_TYPE = 'post';
 import LinkedList from 'content-kit-editor/utils/linked-list';
 import { compact } from 'content-kit-editor/utils/array-utils';
+import Set from 'content-kit-editor/utils/set';
+import { Position, Range } from 'content-kit-editor/utils/cursor';
 
 export default class Post {
   constructor() {
@@ -62,6 +64,7 @@ export default class Post {
 
     return {changedSections, removedSections};
   }
+
   /**
    * Invoke `callbackFn` for all markers between the headMarker and tailMarker (inclusive),
    * across sections
@@ -80,6 +83,39 @@ export default class Post {
         // FIXME: This will fail across cards
         currentMarker = nextSection && nextSection.markers.head;
       }
+    }
+  }
+
+  markupsInRange(range) {
+    const {head, tail} = range;
+    if (head.section === tail.section) {
+      return head.section.markupsInRange(range);
+    } else {
+      let markups = new Set();
+
+      const headRange = new Range(
+        new Position(head.section, head.offset),
+        new Position(head.section, head.section.text.length)
+      );
+
+      const tailRange = new Range(
+        new Position(tail.section, 0),
+        new Position(tail.section, tail.offset)
+      );
+
+      this.walkMarkerableSections(range, (section) => {
+        if (section === head.section) {
+          section.markupsInRange(headRange).forEach(m => markups.add(m));
+        } else if (section === tail.section) {
+          section.markupsInRange(tailRange).forEach(m => markups.add(m));
+        } else { 
+          section.markers.forEach(marker => {
+            marker.markups.forEach(m => markups.add(m));
+          });
+        }
+      });
+
+      return markups.toArray();
     }
   }
 

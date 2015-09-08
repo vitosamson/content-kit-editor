@@ -11,7 +11,7 @@ export default class LinkCommand extends TextFormatCommand {
   }
 
   isActive() {
-    return any(this.editor.activeMarkers, m => m.hasMarkup(this.tag));
+    return any(this.editor.markupsInSelection, m => m.hasTag(this.tag));
   }
 
   exec(url) {

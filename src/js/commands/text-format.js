@@ -16,7 +16,7 @@ export default class TextFormatCommand extends Command {
   }
 
   isActive() {
-    return any(this.editor.activeMarkers, m => m.hasMarkup(this.markup));
+    return any(this.editor.markupsInSelection, m => m === this._markup);
   }
 
   exec() {
