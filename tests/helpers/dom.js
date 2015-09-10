@@ -40,6 +40,7 @@ function selectText(startText,
 }
 
 function moveCursorTo(node, offset=0, endNode=node, endOffset=offset) {
+  if (!node) { throw new Error('Cannot moveCursorTo node without node'); }
   selectRange(node, offset, endNode, endOffset);
 }
 
@@ -151,6 +152,17 @@ function triggerDelete(editor) {
   }
 }
 
+function triggerForwardDelete(editor) {
+  if (!editor) { throw new Error('Must pass `editor` to `triggerForwardDelete`'); }
+  if (isPhantom()) {
+    // simulate deletion for phantomjs
+    let event = { preventDefault() {} }; // FIXME
+    editor.handleDeletion(event);
+  } else {
+    triggerKeyEvent(editor.element, 'keydown', KEY_CODES.DELETE);
+  }
+}
+
 function triggerEnter(editor) {
   if (!editor) { throw new Error('Must pass `editor` to `triggerEnter`'); }
   if (isPhantom()) {
@@ -197,6 +209,7 @@ const DOMHelper = {
   getCursorPosition,
   getSelectedText,
   triggerDelete,
+  triggerForwardDelete,
   triggerEnter,
   insertText,
   triggerKeyCommand
