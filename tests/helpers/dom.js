@@ -145,7 +145,7 @@ function triggerDelete(editor) {
   if (!editor) { throw new Error('Must pass `editor` to `triggerDelete`'); }
   if (isPhantom()) {
     // simulate deletion for phantomjs
-    let event = { preventDefault() {} };
+    let event = { keyCode: KEY_CODES.BACKSPACE, preventDefault() {} };
     editor.handleDeletion(event);
   } else {
     triggerKeyEvent(editor.element, 'keydown', KEY_CODES.BACKSPACE);
@@ -156,7 +156,7 @@ function triggerForwardDelete(editor) {
   if (!editor) { throw new Error('Must pass `editor` to `triggerForwardDelete`'); }
   if (isPhantom()) {
     // simulate deletion for phantomjs
-    let event = { preventDefault() {} }; // FIXME
+    let event = { keyCode: KEY_CODES.DELETE, preventDefault() {} };
     editor.handleDeletion(event);
   } else {
     triggerKeyEvent(editor.element, 'keydown', KEY_CODES.DELETE);

@@ -278,11 +278,11 @@ test('forward-delete in empty list item with nothing after it does nothing', (as
   assert.hasElement('#editor li:contains(X)', 'inserts text at right spot');
 });
 
-test('forward-delete in empty list item with list item after it joins with list item', (assert) => {
+test('forward-delete in empty li with li after it joins with li', (assert) => {
   const mobiledoc = Helpers.mobiledoc.build(builder => {
-    const {post, listSection, listItem} = builder;
+    const {post, listSection, listItem, marker} = builder;
     return post([
-      listSection('ul', [listItem(), listItem('abc')])
+      listSection('ul', [listItem(), listItem([marker('abc')])])
     ]);
   });
   createEditorWithMobiledoc(mobiledoc);
@@ -323,4 +323,66 @@ test('forward-delete in empty li with markup section after it deletes li', (asse
 
   assert.hasElement('#editor p:contains(Xabc)', 'inserts text at right spot');
  
+});
+
+test('forward-delete end of li with nothing after', (assert) => {
+  const mobiledoc = Helpers.mobiledoc.build(builder => {
+    const {post, listSection, listItem, marker} = builder;
+    return post([
+      listSection('ul', [listItem([marker('abc')])])
+    ]);
+  });
+  createEditorWithMobiledoc(mobiledoc);
+
+  const node = $('#editor li')[0].childNodes[0];
+  Helpers.dom.moveCursorTo(node, 'abc'.length);
+  Helpers.dom.triggerForwardDelete(editor);
+
+  assert.hasElement('#editor li:contains(abc)', 'li remains');
+  Helpers.dom.insertText(editor, 'X');
+  assert.hasElement('#editor li:contains(abcX)', 'inserts text at right spot');
+});
+
+test('forward-delete end of li with li after', (assert) => {
+  const mobiledoc = Helpers.mobiledoc.build(builder => {
+    const {post, listSection, listItem, marker} = builder;
+    return post([
+      listSection('ul', [
+        listItem([marker('abc')]),
+        listItem([marker('def')])
+      ])
+    ]);
+  });
+  createEditorWithMobiledoc(mobiledoc);
+
+  assert.equal($('#editor li').length, 2, 'precond - 2 lis');
+  const node = $('#editor li')[0].childNodes[0];
+  Helpers.dom.moveCursorTo(node, 'abc'.length);
+  Helpers.dom.triggerForwardDelete(editor);
+
+  assert.hasElement('#editor li:contains(abcdef)', 'li is joined');
+  assert.equal($('#editor li').length, 1, 'only 1 li');
+  Helpers.dom.insertText(editor, 'X');
+  assert.hasElement('#editor li:contains(abcXdef)', 'inserts text at right spot');
+});
+
+test('forward-delete end of li with markup section after', (assert) => {
+  const mobiledoc = Helpers.mobiledoc.build(builder => {
+    const {post, listSection, listItem, marker, markupSection} = builder;
+    return post([
+      listSection('ul', [listItem([marker('abc')])]),
+      markupSection('p', [marker('def')])
+    ]);
+  });
+  createEditorWithMobiledoc(mobiledoc);
+
+  const node = $('#editor li')[0].childNodes[0];
+  Helpers.dom.moveCursorTo(node, 'abc'.length);
+  Helpers.dom.triggerForwardDelete(editor);
+
+  assert.hasElement('#editor li:contains(abcdef)', 'li is joined');
+  assert.equal($('#editor li').length, 1, 'only 1 li');
+  assert.hasNoElement('#editor p', 'p is removed');
+  Helpers.dom.insertText(editor, 'X');
+  assert.hasElement('#editor li:contains(abcXdef)', 'inserts text at right spot');
 });

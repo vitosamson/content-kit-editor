@@ -29,14 +29,30 @@ function isListSection(section) {
   return section.type === LIST_SECTION_TYPE;
 }
 
-// finds the immediately preceding section that is markerable
-function findPreviousMarkerableSection(section) {
+// finds the immediately preceding section that is markerable,
+// returning null if there is none
+function findImmediatelyPreviousMarkerableSection(section) {
   const prev = section.prev;
   if (!prev) { return null; }
   if (isMarkerable(prev)) {
     return prev;
   } else if (isListSection(prev)) {
     return prev.items.tail;
+  }
+}
+
+function findImmediatelyNextMarkerableSection(section) {
+  const next = section.next;
+  if (next) {
+    if (isMarkerable(next)) {
+      return next;
+    } else if (isListSection(next)) {
+      const firstListItem = next.items.head;
+      return firstListItem;
+    }
+  } else if (isListItem(section)) {
+    const listSection = section.parent;
+    return findImmediatelyNextMarkerableSection(listSection);
   }
 }
 
@@ -231,7 +247,7 @@ class PostEditor {
     } else if (isListItem(section)) {
       nextPosition = this._convertListItemToMarkupSection(section);
     } else {
-      const prevSection = findPreviousMarkerableSection(section);
+      const prevSection = findImmediatelyPreviousMarkerableSection(section);
 
       if (prevSection) {
         const { beforeMarker } = prevSection.join(section);
@@ -257,7 +273,44 @@ class PostEditor {
    * @private
    */
   _deleteForwardFrom(position) {
-    return this._deleteForwardFromMarkerPosition(position);
+    const { section, offset } = position;
+    if (section.isBlank) {
+      // remove this section, focus on start of next markerable section
+      const nextPosition = position.clone();
+      const next = findImmediatelyNextMarkerableSection(section);
+      if (next) {
+        this.removeSection(section);
+        nextPosition.section = next;
+        nextPosition.offset = 0;
+      }
+      return nextPosition;
+    } else if (offset === section.length) {
+      // join next markerable section to this one
+      return this._joinPositionToNextSection(position);
+    } else {
+      return this._deleteForwardFromMarkerPosition(position.markerPosition);
+    }
+  }
+
+  _joinPositionToNextSection(position) {
+    const { section } = position;
+    let nextPosition = position.clone();
+
+    if (!isMarkerable(section)) {
+      throw new Error('Cannot join non-markerable section to next section');
+    } else {
+      const next = findImmediatelyNextMarkerableSection(section);
+      if (next) {
+        section.join(next);
+        section.renderNode.markDirty();
+        this.removeSection(next);
+
+        this.scheduleRerender();
+        this.scheduleDidUpdate();
+      }
+    }
+
+    return nextPosition;
   }
 
   _deleteForwardFromMarkerPosition(markerPosition) {
