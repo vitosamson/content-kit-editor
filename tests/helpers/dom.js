@@ -177,6 +177,35 @@ function triggerRightArrowKey(editor) {
   editor.triggerEvent(editor.element, 'keyup', event);
 }
 
+// Allows our fake copy and paste events to communicate with each other.
+const lastCopyData = {};
+function triggerCopyEvent(editor) {
+  const event = {
+    preventDefault() {},
+    clipboardData: {
+      setData(type, value) { lastCopyData[type] = value; }
+    }
+  };
+  editor.triggerEvent(editor.element, 'copy', event);
+}
+
+function triggerPasteEvent(editor) {
+  const event = {
+    preventDefault() {},
+    clipboardData: {
+      getData(type) { return lastCopyData[type]; }
+    }
+  };
+  editor.triggerEvent(editor.element, 'paste', event);
+}
+
+function fromHTML(html) {
+  html = $.trim(html);
+  let div = document.createElement('div');
+  div.innerHTML = html;
+  return div;
+}
+
 const DOMHelper = {
   moveCursorTo,
   selectText,
@@ -184,6 +213,7 @@ const DOMHelper = {
   triggerEvent,
   triggerEnterKeyupEvent,
   build,
+  fromHTML,
   KEY_CODES,
   getCursorPosition,
   getSelectedText,
@@ -192,7 +222,9 @@ const DOMHelper = {
   triggerEnter,
   insertText,
   triggerKeyCommand,
-  triggerRightArrowKey
+  triggerRightArrowKey,
+  triggerCopyEvent,
+  triggerPasteEvent
 };
 
 export { triggerEvent };
