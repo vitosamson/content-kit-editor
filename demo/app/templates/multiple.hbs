@@ -1,0 +1,26 @@
+{{#content-kit-editor
+    class='post-editor__editor'
+    cards=(content-kit-cards-list)
+    on-change=(action 'didEdit' 'mobiledoc1')
+  as |contentKit|}}
+
+  <button {{action 'loadEditor' 'editor1' contentKit.editor}}>Load Editor 1</button>
+{{/content-kit-editor}}
+
+<hr>
+<hr>
+
+<button {{action 'mergeMobiledocs'}}>Merge &darr; into &uarr;</button>
+
+<hr>
+<hr>
+
+{{#content-kit-editor
+    class='post-editor__editor'
+    cards=(content-kit-cards-list)
+    on-change=(action 'didEdit' 'mobiledoc2')
+  as |contentKit|}}
+
+  <button {{action 'loadEditor' 'editor2' contentKit.editor}}>Load Editor 2</button>
+{{/content-kit-editor}}
+
